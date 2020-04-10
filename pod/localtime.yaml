@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: localtime-test
+  labels:
+    practice: localtime
+    date: "0309"
+spec:
+  volumes:
+    - name: localtime
+      hostPath: 
+        path: /etc/localtime
+        type: ""
+  containers:
+    - name: busybox
+      image: 192.168.190.140:5000/library/busybox:1.26
+      command: ["sleep", "3600"]
+      volumeMounts:
+        - name: localtime
+          mountPath: /etc/localtime
+          readOnly: true

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: practice-nfs
+  labels:
+    date: "0308"
+spec:
+  volumes:
+    - name: nfs
+      nfs:
+        server: 192.168.190.140
+        path: /nfsroot/v1
+  containers:
+    - name: practics-nfs
+      image: 192.168.190.140:5000/library/busybox:1.26
+      command: ["sleep", "3600"]
+      volumeMounts:
+        - name: nfs
+          mountPath: /data

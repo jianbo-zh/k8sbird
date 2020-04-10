@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: high-priority-pod
+  namespace: default
+spec:
+  priorityClassName: high-priority
+  containers:
+    - name: busybox
+      image: 192.168.190.140:5000/library/busybox:1.26
+      command: ["sleep", "3600"]

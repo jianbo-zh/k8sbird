@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dnspolicy-test
+spec:
+  #hostNetwork: true
+
+  # ClusterFirstWithHostNet, ClusterFirst, Default, None
+  # ClusterFirst -> use k8s dns server and merge dnsConfig
+  # ClusterFirstWithHostNet -> same with ClusterFirst, use this options set along with hostNetwork
+  # Default -> will use kubelet resolv.conf
+  # None -> must set dnsConfig, use dnsConfig
+  dnsPolicy: ClusterFirst
+  dnsConfig:
+    nameservers:
+      - 8.8.4.4
+      - 223.5.5.5
+    searches:
+      - ns1.svc.cluster.local
+      - my.dns.search.suffix
+    options:
+      - name: ndots
+        value: "2"
+      - name: edns0
+  containers:
+    - name: busybox
+      image: 192.168.190.140:5000/library/busybox:1.26
+      command: ["sleep", "3600"]

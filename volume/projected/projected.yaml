@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: practice-projected
+  labels:
+    date: "0308"
+    practice: "projected"
+spec:
+  containers:
+    - name: "busybox"
+      image: 192.168.190.140:5000/library/busybox:1.26
+      command: ["sleep", "3600"]
+      resources:
+        limits:
+          cpu: "200m"
+          memory: "100Mi"
+      volumeMounts:
+        - name: projected
+          mountPath: "/data"
+          readOnly: true
+  volumes:
+    - name: projected
+      projected:
+        sources:
+          - configMap:
+              name: cm0308
+              items:
+                - key: database
+                  path: configmap/database
+          - secret:
+              name: secret0308
+              items:
+                - key: username
+                  path: secret/username
+                - key: password
+                  path: secret/password
+          - downwardAPI:
+              items:
+                - path: downward/name
+                  fieldRef:
+                    fieldPath: metadata.name
+                - path: downward/labels
+                  fieldRef:
+                    fieldPath: metadata.labels
+                - path: downward/limits_cpu
+                  resourceFieldRef:
+                    containerName: busybox
+                    resource: limits.cpu
+                - path: downward/requests_memory
+                  resourceFieldRef:
+                    containerName: busybox
+                    resource: requests.memory

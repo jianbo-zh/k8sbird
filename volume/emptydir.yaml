@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: practice-emptydir
+  labels:
+    date: "0308"
+spec:
+  volumes:
+    - name: emptydir
+      emptyDir: {}
+  containers:
+    - name: busybox
+      image: 192.168.190.140:5000/library/busybox:1.26
+      command: ["sleep", "3600"]
+      volumeMounts:
+        - name: emptydir
+          mountPath: /emptydir

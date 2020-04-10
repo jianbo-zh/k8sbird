@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: limit-range-test
+  namespace: quota-test
+spec:
+  limits:
+    - type: Pod
+      min:
+        cpu: "10m"
+        memory: "6Mi"
+      max:
+        cpu: "1"
+        memory: "1Gi"
+    - type: Container
+      default:
+        cpu: "500m"
+        memory: "200Mi"
+      defaultRequest:
+        cpu: "100m"
+        memory: "10Mi"
+      min:
+        cpu: "50m"
+        memory: "6Mi"
+      max:
+        cpu: "500m"
+        memory: "500Mi"
+      maxLimitRequestRatio:
+        cpu: "5"
+        memory: "25"
+

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resource-quota
+  namespace: quota-test
+  labels:
+    run: busybox
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      run: busybox
+  template:
+    metadata:
+      labels:
+        run: busybox
+    spec:
+      containers:
+      - command:
+        - sleep
+        - "3600"
+        image: 192.168.190.140:5000/library/busybox:1.26
+        name: busybox
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "50Mi"
+          limits:
+            cpu: "200m"
+            memory: "50Mi"

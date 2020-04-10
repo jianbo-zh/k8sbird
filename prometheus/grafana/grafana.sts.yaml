@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: grafana
+  namespace: kube-system
+  labels:
+    k8s-app: grafana
+spec:
+  serviceName: grafana
+  replicas: 1
+  updateStrategy:
+   type: "RollingUpdate"
+  selector: 
+    matchLabels:
+      k8s-app: grafana
+  template:
+    metadata:
+      labels:
+        k8s-app: grafana
+    spec:
+      initContainers:
+      - name: "init-data"
+        image: "192.168.190.140:5000/library/busybox:1.26"
+        imagePullPolicy: "IfNotPresent"
+        command: ["chown", "-R", "472:472", "/var/lib/grafana"]
+        volumeMounts:
+        - name: grafana-data
+          mountPath: /var/lib/grafana
+          subPath: ""
+      containers:
+      - name: grafana
+        image: 192.168.190.140:5000/grafana/grafana:6.6.2
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 3000
+          name: grafana
+        env:
+        - name: GF_SECURITY_ADMIN_USER
+          value: admin
+        - name: GF_SECURITY_ADMIN_PASSWORD
+          value: admin
+        readinessProbe:
+          failureThreshold: 10
+          httpGet:
+            path: /api/health
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 30
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/health
+            port: 3000
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 100m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 256Mi
+        volumeMounts:
+        - name: grafana-data
+          mountPath: /var/lib/grafana
+          subPath: ""
+        securityContext:
+          runAsGroup: 472
+          runAsUser: 472
+  volumeClaimTemplates:
+  - metadata:
+      name: grafana-data
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: "5Gi"

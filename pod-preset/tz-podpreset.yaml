@@ -1,0 +1,17 @@
+apiVersion: settings.k8s.io/v1alpha1
+kind: PodPreset
+metadata:
+  name: podpreset-test
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      tz: shanghai
+  volumes:
+    - name: tz
+      hostPath:
+        path: /usr/share/zoneinfo/Asia/Shanghai
+  volumeMounts:
+    - name: tz
+      mountPath: /etc/localtime
+

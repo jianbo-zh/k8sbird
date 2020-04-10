@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: localpv-test
+  namespace: default
+spec:
+  volumes:
+    - name: localpv
+      persistentVolumeClaim:
+        claimName: localpvc
+  containers:
+    - name: busybox
+      image: 192.168.190.140:5000/library/busybox:1.26
+      command: ["sleep", "3600"]
+      volumeMounts:
+        - name: localpv
+          mountPath: /data
+          readOnly: false

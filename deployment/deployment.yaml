@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment-test
+  namespace: default
+  labels:
+    app: deployment-test
+    date: "0312"
+spec:
+  replicas: 2
+
+  # keep template revision (replicaset) count
+  revisionHistoryLimit: 10
+
+  strategy:
+    # RollingUpdate: 滚动升级, Recreate: 先杀掉已有的pod在升级
+    type: RollingUpdate
+    # 滚动升级时的配置
+    rollingUpdate:
+      # 可以超过期望的 Pod 最大数量或百分比
+      maxSurge: 25%
+      # 不可用pod的最大数或百分比
+      maxUnavailable: 25%
+  
+  # 等待的 Deployment 进行的秒数，超过该时间还没处理完，将表示失败 Reason=ProgressDeadlineExceeded
+  # 如果设置该参数，该值必须大于 .spec.minReadySeconds
+  progressDeadlineSeconds: 100
+
+  selector:
+    matchLabels:
+      app: deployment-test
+  template:
+    metadata:
+      labels:
+        app: deployment-test
+    spec:
+      containers:
+        - name: busyboxy
+          image: 192.168.190.140:5000/library/busybox:1.26
+          command: ["sleep", "3600"]

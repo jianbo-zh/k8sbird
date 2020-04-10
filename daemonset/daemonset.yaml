@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: daemonset-test
+  labels:
+    app: daemonset-test
+    date: "0308"
+spec:
+  selector:
+    matchLabels:
+      app: daemonset-test
+  template:
+    metadata:
+      labels:
+        app: daemonset-test
+    spec:
+      tolerations:
+        - key: node-role.kubernetes.io/master
+          operator: Exists
+          effect: NoSchedule
+      containers:
+        - name: busybox
+          image: 192.168.190.140:5000/library/busybox:1.26
+          command: ["sleep", "3600"]

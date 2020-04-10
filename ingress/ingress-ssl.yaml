@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-test
+  namespace: default
+spec:
+  tls:
+    - hosts:
+        - jianbo.io
+      secretName: tls-jianbo-io
+  rules:
+    - host: jianbo.io
+      http:
+        paths:
+          - path: /nginx-1/
+            backend:
+              serviceName: nginx-1
+              servicePort: 80
+          - path: /nginx-2/
+            backend:
+              serviceName: nginx-2
+              servicePort: 80
+

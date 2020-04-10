@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: hostname-test
+spec:
+  hostname: busybox-test
+  containers:
+    - name: busybox1
+      image: 192.168.190.140:5000/library/busybox:1.26
+      command: ["sleep", "3600"]
+    - name: busybox2
+      image: 192.168.190.140:5000/library/busybox:1.26
+      command: ["sleep", "3600"]

@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: practice-hostpath
+  labels:
+    date: "0308"
+spec:
+  volumes:
+    - name: hostpath
+      hostPath:
+        path: /data11
+        # type field is optional  -> DirectoryOrCreate, Directory, FileOrCreate, File, Socket, CharDevice, BlockDevice
+        #type: DirectoryOrCreate
+  containers:
+    - name: hostpath
+      image: 192.168.190.140:5000/library/busybox:1.26
+      command: ["sleep", "3600"]
+      volumeMounts:
+        - name: hostpath
+          mountPath: /data

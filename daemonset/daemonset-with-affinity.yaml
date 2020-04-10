@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: daemonset-test-2
+  labels:
+    app: daemonset-test-2
+    date: "0308"
+spec:
+  selector:
+    matchLabels:
+      app: daemonset-test-2
+  template:
+    metadata:
+      labels:
+        app: daemonset-test-2
+    spec:
+      # node selector
+      nodeSelector:
+        disktype: ssd
+
+      # node affinity set
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                 - key: kubernetes.io/hostname
+                   operator: In
+                   values:
+                     - k8s-node-2
+                     - k8s-node-3
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 99
+              preference:
+                matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - k8s-node-2
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - busybox
+              # 指定labelSelector所属命名空间，不设置或为空数组表示同当前Pod命名空间
+              #namespaces: []
+              topologyKey: kubernetes.io/hostname
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - other-pod
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - other-busybox
+              topologyKey: kubernetes.io/hostname
+
+      containers:
+        - name: busybox
+          image: 192.168.190.140:5000/library/busybox:1.26
+          command: ["sleep", "3600"]

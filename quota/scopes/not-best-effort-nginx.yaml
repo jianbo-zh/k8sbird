@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    run: best-effort-nginx
+  name: best-effort-nginx
+spec:
+  replicas: 8
+  selector:
+    matchLabels:
+      run: best-effort-nginx
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: best-effort-nginx
+    spec:
+      containers:
+      - image: 192.168.190.140:5000/library/nginx
+        name: best-effort-nginx
+        resources:
+          limits:
+            cpu: 100m
+            memory: 200Mi
+          requests:
+            cpu: 50m
+            memory: 100Mi
+status: {}
+

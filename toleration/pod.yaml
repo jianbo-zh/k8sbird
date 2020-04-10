@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: toleration-test
+  namespace: default
+spec:
+  tolerations:
+    - effect: NoSchedule
+      key: key
+      operator: Equal
+      value: value
+    - effect: NoExecute
+      key: key1
+      operator: Exists
+      tolerationSeconds: 300
+  containers:
+    - name: busybox
+      image: 192.168.190.140:5000/library/busybox:1.26
+      command: ["sleep", "3600"]
